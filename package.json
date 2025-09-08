@@ -1,0 +1,35 @@
+{
+  "name": "@flingoos/shared",
+  "version": "0.1.0",
+  "description": "Shared types, schemas, and validation for Flingoos services - NO business logic",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./types": "./dist/types.js",
+    "./schemas": "./dist/schemas.js",
+    "./validation": "./dist/validation.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "validate": "npm run build && node dist/validation.js",
+    "test": "npm run validate",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "dependencies": {
+    "zod": "^3.22.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "keywords": ["types", "schemas", "validation", "flingoos"],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
