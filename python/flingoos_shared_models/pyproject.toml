@@ -23,8 +23,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/flingoos/flingoos-shared"
-Repository = "https://github.com/flingoos/flingoos-shared"
+Homepage = "https://github.com/tslilon/flingoos-shared"
+Repository = "https://github.com/tslilon/flingoos-shared"
 
 [tool.setuptools.packages.find]
 where = ["."]

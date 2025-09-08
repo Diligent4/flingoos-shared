@@ -3,8 +3,8 @@ Name: flingoos-shared-models
 Version: 0.1.0
 Summary: Generated Pydantic models from @flingoos/shared JSON schemas
 Author-email: Flingoos <dev@flingoos.com>
-Project-URL: Homepage, https://github.com/flingoos/flingoos-shared
-Project-URL: Repository, https://github.com/flingoos/flingoos-shared
+Project-URL: Homepage, https://github.com/tslilon/flingoos-shared
+Project-URL: Repository, https://github.com/tslilon/flingoos-shared
 Keywords: pydantic,models,schemas,flingoos,validation
 Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
@@ -25,7 +25,7 @@ Generated Pydantic v2 models from @flingoos/shared JSON schemas. Provides runtim
 
 ```bash
 # Install from git with pinned commit/tag
-pip install git+ssh://git@github.com/flingoos/flingoos-shared.git@<SHA>#subdirectory=python/flingoos_shared_models
+pip install git+ssh://git@github.com/tslilon/flingoos-shared.git@<SHA>#subdirectory=python/flingoos_shared_models
 ```
 
 ## Usage

@@ -13,7 +13,7 @@ Shared types, schemas, and validation for Flingoos services. This package preven
 
 ```bash
 # Install from git (pinned to exact commit/tag)
-npm install git+https://github.com/flingoos/flingoos-shared.git#v0.1.0
+npm install git+https://github.com/tslilon/flingoos-shared.git#v0.1.0
 ```
 
 ## Usage

@@ -6,7 +6,7 @@ Generated Pydantic v2 models from @flingoos/shared JSON schemas. Provides runtim
 
 ```bash
 # Install from git with pinned commit/tag
-pip install git+ssh://git@github.com/flingoos/flingoos-shared.git@<SHA>#subdirectory=python/flingoos_shared_models
+pip install git+ssh://git@github.com/tslilon/flingoos-shared.git@<SHA>#subdirectory=python/flingoos_shared_models
 ```
 
 ## Usage
