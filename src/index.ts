@@ -10,6 +10,7 @@ export * from './constants.js';
 export * from './types.js';
 export * from './schemas.js';
 export * from './validation.js';
+export * from './stage-messages.js';
 
 // Named exports for specific use cases
 export {
@@ -62,7 +63,7 @@ export {
   validateForgeJobResponse,
   validateBridgeCommandRequest,
   validateSessionInternalState,
-  
+
   // Utility functions
   calculateProgress,
   getStageDisplayName,
@@ -70,6 +71,19 @@ export {
   getFailedStages,
   runSmokeTests
 } from './validation.js';
+
+export {
+  // Stage message utilities
+  getStageMessage,
+  getAllStageMessages,
+  isValidStageCode,
+  STAGE_MESSAGES
+} from './stage-messages.js';
+
+export type {
+  StageCode,
+  StageMessageMap
+} from './stage-messages.js';
 
 export {
   // Key schemas for runtime validation
