@@ -12,7 +12,7 @@ import * as schemas from './schemas.js';
 // Constants (re-exported for convenience)
 // ============================================================================
 
-export { STAGES, STAGE_NAMES, TOTAL_STAGES } from './constants.js';
+export { STAGES, TOTAL_STAGES } from './constants.js';
 export type { Stage, SessionStatus, ProcessingStatus, StageExecutionStatus } from './constants.js';
 
 // ============================================================================

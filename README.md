@@ -58,10 +58,10 @@ console.log(`${progress.progress_percent}% complete, current stage: ${progress.s
 ### Constants
 
 ```typescript
-import { STAGES, TOTAL_STAGES, STAGE_NAMES } from '@flingoos/shared';
+import { STAGES, TOTAL_STAGES, getStageLabel } from '@flingoos/shared';
 
 console.log(`Pipeline has ${TOTAL_STAGES} stages:`, STAGES);
-console.log('Stage A name:', STAGE_NAMES['A']); // "Data Collection"
+console.log('Stage A label:', getStageLabel('A')); // "Uploading data"
 ```
 
 ## Schema Sources

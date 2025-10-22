@@ -16,7 +16,6 @@ export * from './stage-messages.js';
 export {
   // Constants
   STAGES,
-  STAGE_NAMES,
   TOTAL_STAGES,
   SESSION_STATUSES,
   PROCESSING_STATUSES
@@ -66,7 +65,6 @@ export {
 
   // Utility functions
   calculateProgress,
-  getStageDisplayName,
   isProcessingComplete,
   getFailedStages,
   runSmokeTests
@@ -77,7 +75,11 @@ export {
   getStageMessage,
   getAllStageMessages,
   isValidStageCode,
-  STAGE_MESSAGES
+  getStageLabel,
+  getStageNumber,
+  getAllStageCodes,
+  STAGE_MESSAGES,
+  STAGE_LABELS
 } from './stage-messages.js';
 
 export type {

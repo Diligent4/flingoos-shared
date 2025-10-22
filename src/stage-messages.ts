@@ -132,3 +132,59 @@ export function getAllStageMessages(stage: StageCode): string[] {
 export function isValidStageCode(stage: string): stage is StageCode {
   return stage in STAGE_MESSAGES;
 }
+
+/**
+ * Clear technical labels for stages (used in admin UI)
+ * 
+ * These provide transparent, professional descriptions of what's happening
+ * during each processing stage.
+ */
+export const STAGE_LABELS: Record<StageCode, string> = {
+  A: "Uploading data",
+  B: "Extracting content", 
+  C: "Segmenting timeline",
+  D: "Normalizing data",
+  E: "LLM interpretation",
+  F: "Structuring workflow",
+  U: "Finalizing output"
+};
+
+/**
+ * Get the technical label for a stage
+ *
+ * @param stage - The stage code (A-F, U)
+ * @returns A clear, professional label for the stage
+ *
+ * @example
+ * getStageLabel('A') // "Uploading data"
+ * getStageLabel('E') // "LLM interpretation"
+ */
+export function getStageLabel(stage: StageCode): string {
+  return STAGE_LABELS[stage] || `Stage ${stage}`;
+}
+
+/**
+ * Get stage number from code (A=1, B=2, ..., U=7)
+ *
+ * @param stage - The stage code
+ * @returns The stage number (1-7)
+ *
+ * @example
+ * getStageNumber('A') // 1
+ * getStageNumber('U') // 7
+ */
+export function getStageNumber(stage: StageCode): number {
+  const map: Record<StageCode, number> = {
+    A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, U: 7
+  };
+  return map[stage] || 0;
+}
+
+/**
+ * Get all stage codes in order
+ *
+ * @returns Array of all stage codes in processing order
+ */
+export function getAllStageCodes(): StageCode[] {
+  return ['A', 'B', 'C', 'D', 'E', 'F', 'U'];
+}

@@ -8,16 +8,6 @@
 export const STAGES = ['A', 'B', 'C', 'D', 'E', 'F', 'U'] as const;
 export type Stage = typeof STAGES[number];
 
-export const STAGE_NAMES: Record<Stage, string> = {
-  'A': 'Data Collection',
-  'B': 'Segmentation', 
-  'C': 'LLM Inputs',
-  'D': 'Analyses',
-  'E': 'Workflow Guide',
-  'F': 'Quality Assessment',
-  'U': 'Upload'
-};
-
 export const TOTAL_STAGES = STAGES.length;
 
 export const SESSION_STATUSES = ['recording', 'processing', 'completed', 'failed'] as const;

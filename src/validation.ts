@@ -8,6 +8,7 @@ import { z } from 'zod';
 import * as schemas from './schemas.js';
 import { STAGES, TOTAL_STAGES } from './constants.js';
 import type { StageExecution, JobProgress, Stage } from './types.js';
+import { getStageLabel } from './stage-messages.js';
 
 // ============================================================================
 // Validation Result Types
@@ -104,29 +105,12 @@ export function calculateProgress(stage_executions: StageExecution[]): JobProgre
     processing_id,
     progress_percent: progressPercent,
     current_stage: currentStage,
-    stage_name: getStageDisplayName(currentStage),
+    stage_name: getStageLabel(currentStage),
     stages_completed: completedStages.map(s => s.stage),
     stages_total: TOTAL_STAGES,
     elapsed_seconds: elapsedSeconds,
     stage_durations: stageDurations
   };
-}
-
-/**
- * Get human-readable stage name
- */
-export function getStageDisplayName(stage: Stage): string {
-  const names = {
-    'A': 'Data Collection',
-    'B': 'Segmentation', 
-    'C': 'LLM Inputs',
-    'D': 'Analyses',
-    'E': 'Workflow Guide',
-    'F': 'Quality Assessment',
-    'U': 'Upload'
-  } as const;
-  
-  return names[stage] || stage;
 }
 
 /**
