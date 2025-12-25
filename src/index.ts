@@ -104,7 +104,11 @@ export {
   
   // JWT authentication schemas (Phase 2)
   AuthTokenResponseSchema,
-  AuthClaimsSchema
+  AuthClaimsSchema,
+  
+  // Presence schemas (Phase 14)
+  PresenceIntentResponseSchema,
+  PresenceStatusResponseSchema
 } from './schemas.js';
 
 // Video artifact types for favorites and usage tracking
