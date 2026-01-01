@@ -12,6 +12,7 @@ export * from './schemas.js';
 export * from './validation.js';
 export * from './stage-messages.js';
 export * from './video-artifacts.js';
+export * from './project.js';
 
 // Named exports for specific use cases
 export {
@@ -121,3 +122,58 @@ export {
   UserFavoriteSchema,
   FirestoreVideoDocumentSchema
 } from './video-artifacts.js';
+
+// Project types for domain grouping
+export type {
+  Project,
+  ProjectWithId,
+  ProjectWithStats,
+  ProjectVisibility,
+  CreateProject,
+  UpdateProject,
+  SessionProjectField,
+  UpdateSessionProject,
+  ListProjectsResponse,
+  GetProjectResponse,
+  // MCP types (Phase 2.5)
+  ProjectSessionSummary,
+  ProjectSessionWithContent,
+  MCPProjectResponse,
+  KnowledgeMatch,
+  // Context-first API types (Phase 3)
+  ContextKind,
+  SessionType,
+  ContextBase,
+  SessionContext,
+  ProjectContext,
+  Context,
+  ContextSearchResult,
+  ContextListOutput
+} from './project.js';
+
+export {
+  ProjectSchema,
+  ProjectWithIdSchema,
+  ProjectWithStatsSchema,
+  ProjectVisibilitySchema,
+  CreateProjectSchema,
+  UpdateProjectSchema,
+  SessionProjectFieldSchema,
+  UpdateSessionProjectSchema,
+  ListProjectsResponseSchema,
+  GetProjectResponseSchema,
+  // MCP schemas (Phase 2.5)
+  ProjectSessionSummarySchema,
+  ProjectSessionWithContentSchema,
+  MCPProjectResponseSchema,
+  KnowledgeMatchSchema,
+  // Context-first API schemas (Phase 3)
+  ContextKindSchema,
+  SessionTypeSchema,
+  ContextBaseSchema,
+  SessionContextSchema,
+  ProjectContextSchema,
+  ContextSchema,
+  ContextSearchResultSchema,
+  ContextListOutputSchema
+} from './project.js';
