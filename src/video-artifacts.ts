@@ -100,7 +100,13 @@ export const VideoWorkflowStepSchema = z.object({
   // @deprecated - kept optional for backward compatibility
   confidence: ConfidenceLevelSchema.optional(),
   // New field: step type (do/check/hitl/conditional)
-  step_type: StepTypeSchema.optional()
+  step_type: StepTypeSchema.optional(),
+  
+  // Provenance fields (v1 augmentation)
+  item_id: z.string().optional(),                      // UUIDv7, minted at creation (optional for backward compat)
+  source_session_id: z.string().optional(),            // Session that introduced this step
+  added_at: z.string().optional(),                     // ISO timestamp when added
+  augmentation_of_session_id: z.string().optional(),   // Target session if from augmentation
 });
 
 // New schema replacing quick_reference
@@ -122,6 +128,19 @@ export const VideoQuickReferenceSchema = z.object({
 export const WorkflowSchemaVersionSchema = z.enum(['1.0', '2.0']);
 export type WorkflowSchemaVersion = z.infer<typeof WorkflowSchemaVersionSchema>;
 
+// ============================================================================
+// Augmentation History (v1 augmentation)
+// ============================================================================
+
+export const AugmentationHistoryEntrySchema = z.object({
+  session_id: z.string(),              // The augmentation session
+  timestamp: z.string(),               // ISO timestamp when augmentation was processed
+  items_added: z.number(),             // Count of items added
+  cross_type: z.boolean().optional(),  // True if augmenting different type (workflow -> teaching or vice versa)
+});
+
+export type AugmentationHistoryEntry = z.infer<typeof AugmentationHistoryEntrySchema>;
+
 export const VideoWorkflowGuideContentSchema = z.object({
   // Schema version for migration - defaults to "1.0" for old data
   schema_version: WorkflowSchemaVersionSchema.optional().default('1.0'),
@@ -133,7 +152,12 @@ export const VideoWorkflowGuideContentSchema = z.object({
   // @deprecated - kept optional for backward compatibility with old data
   quick_reference: VideoQuickReferenceSchema.optional(),
   // @deprecated - no longer generated
-  guide_markdown: z.string().optional()
+  guide_markdown: z.string().optional(),
+  
+  // Augmentation tracking (v1 augmentation)
+  augmentation_history: z.array(AugmentationHistoryEntrySchema).optional(),
+  // knowledge_items for cross-type augmentation (teaching -> workflow)
+  knowledge_items: z.array(z.lazy(() => KnowledgeItemSchema)).optional(),
 });
 
 export type VideoTaskSummary = z.infer<typeof VideoTaskSummarySchema>;
@@ -175,7 +199,18 @@ export const KnowledgeItemSchema = z.object({
   related_items: z.array(z.string()).optional(),
   visual_aids: z.string().optional(),
   audio_emphasis: z.string().optional(),
-  code_snippet: z.string().optional()
+  code_snippet: z.string().optional(),
+  
+  // Provenance fields (v1 augmentation)
+  source_session_id: z.string().optional(),            // Session that introduced this item
+  added_at: z.string().optional(),                     // ISO timestamp when added
+  augmentation_of_session_id: z.string().optional(),   // Target session if from augmentation
+  
+  // Cross-type routing (v1 augmentation)
+  subtype: z.string().optional(),                      // For normalized foreign content: "procedure", "example", etc.
+  
+  // Duplicate detection (v1 augmentation)
+  possible_duplicate_of: z.string().optional(),        // item_id if flagged as potential duplicate
 });
 
 export const ConceptRelationshipSchema = z.object({
@@ -193,7 +228,10 @@ export const KnowledgeBaseContentSchema = z.object({
   // abstract replaces key_takeaways - a single paragraph for executives
   abstract: z.string().optional(),
   // key_takeaways is deprecated but kept optional for backward compatibility with old data
-  key_takeaways: z.array(z.string()).optional()
+  key_takeaways: z.array(z.string()).optional(),
+  
+  // Augmentation tracking (v1 augmentation)
+  augmentation_history: z.array(AugmentationHistoryEntrySchema).optional(),
 });
 
 export type SessionSummary = z.infer<typeof SessionSummarySchema>;
