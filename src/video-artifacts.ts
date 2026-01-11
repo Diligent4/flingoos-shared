@@ -99,10 +99,12 @@ export type ConditionalTargetSteps = z.infer<typeof ConditionalTargetStepsSchema
  */
 export const ConditionalDetailsSchema = z.object({
   // The condition to evaluate (normalized expression format)
-  condition: z.string().min(1).transform(s => s.trim()),
+  // Trim first, then validate min length to reject whitespace-only strings
+  condition: z.string().transform(s => s.trim()).pipe(z.string().min(1, 'Condition cannot be empty')),
   
   // Action to perform if condition is TRUE (required)
-  true_action: z.string().min(1).transform(s => s.trim()),
+  // Trim first, then validate min length to reject whitespace-only strings
+  true_action: z.string().transform(s => s.trim()).pipe(z.string().min(1, 'True action cannot be empty')),
   
   // Action to perform if condition is FALSE (optional - not all conditionals have else)
   false_action: z.string().transform(s => s.trim()).optional(),
