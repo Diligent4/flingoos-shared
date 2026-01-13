@@ -23,12 +23,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Get the daily period ID for a given date.
+ * Uses UTC to ensure consistent period IDs regardless of server timezone.
  * @returns Format: "YYYY-MM-DD"
  */
 export function getDailyPeriodId(date: Date = new Date()): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
