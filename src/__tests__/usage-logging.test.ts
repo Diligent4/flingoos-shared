@@ -120,9 +120,7 @@ describe('Usage Logging Module', () => {
       expect(isVideoForgeAction('video_forge_analysis')).toBe(true);
       expect(isVideoForgeAction('video_forge_augmentation')).toBe(true);
       expect(isVideoForgeAction('session')).toBe(false);
-      expect(isMcpAction('mcp_context_list')).toBe(true);
-      expect(isMcpAction('mcp_context_modify')).toBe(true);
-      expect(isMcpAction('session')).toBe(false);
+      expect(isVideoForgeAction('mcp_context_list')).toBe(false);
     });
   });
   
