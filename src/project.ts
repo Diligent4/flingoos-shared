@@ -16,10 +16,11 @@ import { z } from 'zod';
 /**
  * Project visibility - controls access within organization.
  * - 'private': Only owner can see
- * - 'public': All org members can see
+ * - 'org:view': All org members can view
+ * - 'org:edit': All org members can view and edit
  * Sessions inherit visibility from their project.
  */
-export const ProjectVisibilitySchema = z.enum(['private', 'public']);
+export const ProjectVisibilitySchema = z.enum(['private', 'org:view', 'org:edit']);
 export type ProjectVisibility = z.infer<typeof ProjectVisibilitySchema>;
 
 /**
