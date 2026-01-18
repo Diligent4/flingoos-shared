@@ -245,7 +245,8 @@ export interface UsageTimeseriesDataPoint {
   
   // Session lifecycle
   sessions_started: number;
-  sessions_completed: number;
+  sessions_completed: number;  // Logged by video-forge when processing completes
+  sessions_failed: number;     // Logged by video-forge when processing fails
   
   // Recording source breakdown
   sessions_screen: number;
