@@ -173,7 +173,8 @@ export const CHART_COLORS = {
  */
 export const MAIN_METRICS = {
   sessions_started: { label: 'Sessions Started', color: CHART_COLORS.blue },
-  sessions_completed: { label: 'Sessions Completed', color: CHART_COLORS.teal },
+  sessions_completed: { label: 'Sessions Completed', color: CHART_COLORS.teal },  // Logged by video-forge
+  sessions_failed: { label: 'Sessions Failed', color: CHART_COLORS.orange },       // Logged by video-forge
   publishes: { label: 'Publishes', color: CHART_COLORS.green },
   exports: { label: 'Exports', color: CHART_COLORS.cyan },
   sessions_screen: { label: 'Screen Sessions', color: CHART_COLORS.purple },
@@ -190,7 +191,7 @@ export const SECONDARY_METRICS = {
   workflow_edits: { label: 'Workflow Edits', color: CHART_COLORS.green },
   enrich_clicks: { label: 'Enrich Clicks', color: CHART_COLORS.yellow },
   mean_session_length: { label: 'Mean Session Length (sec)', color: CHART_COLORS.indigo },
-  unique_users: { label: 'Daily Unique Users', color: CHART_COLORS.teal },
+  unique_users: { label: 'Total Daily Log-ins', color: CHART_COLORS.teal },
 } as const;
 
 /**
@@ -219,7 +220,8 @@ export const VIDEO_FORGE_METRICS = {
 export const ALL_COUNTER_FIELDS = [
   // Session lifecycle
   'sessions_started',
-  'sessions_completed',
+  'sessions_completed',  // Logged by video-forge when processing completes
+  'sessions_failed',     // Logged by video-forge when processing fails
   
   // Recording source
   'sessions_screen',
