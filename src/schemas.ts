@@ -479,3 +479,61 @@ export const AuthClaimsSchema = z.object({
   device_id: z.string(),     // Device ID (for convenience)
   fingerprint: z.string()    // Device fingerprint (for validation)
 });
+
+// ============================================================================
+// Text-to-Context Generation Schemas (MCP context-generate)
+// ============================================================================
+
+/**
+ * Output language options for text-to-context generation
+ * Matches OutputLanguage from video-forge api_models.py
+ */
+export const TextOutputLanguageSchema = z.enum([
+  'auto', 'en', 'es', 'fr', 'de', 'pt', 'zh', 'ja', 'ko', 
+  'ar', 'he', 'ru', 'it', 'nl', 'pl', 'tr', 'vi', 'th', 'id', 'hi'
+]);
+
+/**
+ * Text session reference - identifies the text generation request
+ */
+export const TextSessionRefSchema = z.object({
+  org_id: z.string().min(1),
+  user_id: z.string().min(1),
+  user_email: z.string().email().optional(),
+  session_id: z.string().min(1),
+  content: z.string().min(50).max(50000)  // Text payload (50 chars min, 50k max)
+}).describe('Text session reference for context generation');
+
+/**
+ * Text processing options - how to process the text
+ */
+export const TextProcessingOptionsSchema = z.object({
+  input_type: z.enum(['workflow_recording', 'teaching_session']),
+  output_format: z.enum(['workflow_guide', 'knowledge_base']),
+  model: z.string().default('gemini-3-pro-preview'),
+  output_language: TextOutputLanguageSchema.default('auto')
+}).describe('Text processing configuration');
+
+/**
+ * Text Trigger v1.0 - JSON contract for text-to-context generation
+ * Analogous to VideoTrigger but for text input instead of video
+ */
+export const TextTriggerSchema = z.object({
+  version: z.literal('1.0').default('1.0'),
+  text_session: TextSessionRefSchema,
+  processing_options: TextProcessingOptionsSchema,
+  visibility: z.enum(['private', 'org:view', 'org:edit']).default('private'),
+  source: z.literal('mcp-generate').default('mcp-generate'),
+  project_id: z.string().optional(),
+  name: z.string().optional()  // Optional user-provided name for the generated context
+}).describe('Text Trigger v1.0 - JSON contract for text-to-context generation');
+
+/**
+ * Text generation response - returned immediately when generation is queued
+ */
+export const TextGenerateResponseSchema = z.object({
+  status: z.enum(['accepted', 'error']),
+  session_id: z.string(),
+  message: z.string(),
+  estimated_seconds: z.number().optional()
+}).describe('Response from text-to-context generation request');

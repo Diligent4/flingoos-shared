@@ -146,3 +146,13 @@ export type SessionStartRequest = z.infer<typeof schemas.SessionStartRequestSche
 
 // Updated canonical error envelope (replaces StandardErrorResponse)
 export type ErrorEnvelope = z.infer<typeof schemas.ErrorEnvelopeSchema>;
+
+// ============================================================================
+// Text-to-Context Generation Types (MCP context-generate)
+// ============================================================================
+
+export type TextOutputLanguage = z.infer<typeof schemas.TextOutputLanguageSchema>;
+export type TextSessionRef = z.infer<typeof schemas.TextSessionRefSchema>;
+export type TextProcessingOptions = z.infer<typeof schemas.TextProcessingOptionsSchema>;
+export type TextTrigger = z.infer<typeof schemas.TextTriggerSchema>;
+export type TextGenerateResponse = z.infer<typeof schemas.TextGenerateResponseSchema>;
