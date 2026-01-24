@@ -133,6 +133,12 @@ export function getCounterUpdates(
       break;
       
     case 'export':
+      // Check if this is an n8n export (AI-powered, resource-intensive)
+      const exportType = properties?.export_type as string | undefined;
+      if (exportType === 'n8n') {
+        updates.n8n_exports = increment(1);
+      }
+      // Always increment regular exports counter as well for total tracking
       updates.exports = increment(1);
       break;
       
