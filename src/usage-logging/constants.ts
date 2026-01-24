@@ -166,6 +166,7 @@ export const CHART_COLORS = {
   pink: '#EC4899',
   purple: '#8B5CF6',
   indigo: '#6366F1',
+  red: '#EF4444',
 } as const;
 
 /**
@@ -177,6 +178,7 @@ export const MAIN_METRICS = {
   sessions_failed: { label: 'Sessions Failed', color: CHART_COLORS.orange },       // Logged by video-forge
   publishes: { label: 'Publishes', color: CHART_COLORS.green },
   exports: { label: 'Exports', color: CHART_COLORS.cyan },
+  n8n_exports: { label: 'n8n Exports', color: CHART_COLORS.red },  // AI-powered n8n exports (resource-intensive)
   sessions_screen: { label: 'Screen Sessions', color: CHART_COLORS.purple },
   sessions_camera: { label: 'Camera Sessions', color: CHART_COLORS.yellow },
   sessions_workflow: { label: 'Workflow Sessions', color: CHART_COLORS.blue },
@@ -234,6 +236,7 @@ export const ALL_COUNTER_FIELDS = [
   // Outputs
   'publishes',
   'exports',
+  'n8n_exports',  // AI-powered n8n exports (resource-intensive)
   
   // Secondary
   'workflow_edits',

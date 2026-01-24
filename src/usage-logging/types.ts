@@ -91,7 +91,7 @@ export type LegacySessionType = RecordingSource | 'teach_ai';
 /**
  * Export types
  */
-export type ExportType = 'uipath' | 'power_automate' | 'json' | 'pdf' | 'markdown';
+export type ExportType = 'uipath' | 'power_automate' | 'json' | 'pdf' | 'markdown' | 'n8n';
 
 // ==================== Event Structures ====================
 
@@ -259,6 +259,7 @@ export interface UsageTimeseriesDataPoint {
   // Outputs
   publishes: number;
   exports: number;
+  n8n_exports: number;  // AI-powered n8n exports (separate from regular exports)
   
   // Secondary metrics
   workflow_edits: number;
