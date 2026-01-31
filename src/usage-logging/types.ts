@@ -329,6 +329,17 @@ export interface UsageTimeseriesDataPoint {
   video_forge_input_tokens: number;
   video_forge_output_tokens: number;
   video_forge_cost_usd: number;
+  
+  // Billing metrics (logged by admin-panel billing page and webhooks)
+  billing_page_views: number;
+  checkout_started: number;
+  checkout_completed: number;
+  free_extensions_claimed: number;
+  new_subscriptions: number;
+  canceled_subscriptions: number;
+  active_subscriptions_individual: number;
+  active_subscriptions_business: number;
+  revenue_usd: number;
 }
 
 /**
