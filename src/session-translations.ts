@@ -83,6 +83,29 @@ export function getCanonicalContent(session: SessionContentDoc | null | undefine
 // ============================================================================
 
 /**
+ * Unwrap old wrapper structure if present.
+ * Old format: { metadata: {...}, content: {...actual data...} }
+ * New format: {...actual data...}
+ */
+function unwrapContent(content: unknown): unknown {
+  if (
+    content &&
+    typeof content === 'object' &&
+    'content' in content &&
+    typeof (content as Record<string, unknown>).content === 'object' &&
+    (content as Record<string, unknown>).content !== null
+  ) {
+    // Check if this looks like the old wrapper structure
+    // by verifying the nested content has workflow fields
+    const nested = (content as Record<string, unknown>).content as Record<string, unknown>;
+    if ('task_summary' in nested || 'knowledge_items' in nested || 'step_by_step_guide' in nested) {
+      return nested;
+    }
+  }
+  return content;
+}
+
+/**
  * Returns content to display and metadata for the selected language.
  * Use only in: viewer, PDF/DOCX/CSV export, share links.
  *
@@ -126,8 +149,10 @@ export function getResolvedContent(
   }
 
   if (entry.status === 'ready') {
+    // Unwrap old wrapper structure if present (backward compatibility)
+    const unwrappedContent = unwrapContent(entry.translatedContent);
     return {
-      contentToUse: entry.translatedContent,
+      contentToUse: unwrappedContent,
       dir,
       languageUsed: lang,
       freshnessStatus: 'ready',
@@ -135,8 +160,10 @@ export function getResolvedContent(
   }
 
   if (entry.status === 'stale') {
+    // Unwrap old wrapper structure if present (backward compatibility)
+    const unwrappedContent = unwrapContent(entry.translatedContent);
     return {
-      contentToUse: entry.translatedContent,
+      contentToUse: unwrappedContent,
       dir,
       languageUsed: lang,
       freshnessStatus: 'stale',
