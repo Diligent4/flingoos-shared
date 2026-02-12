@@ -57,6 +57,10 @@ export const ProjectSchema = z.object({
   created_at: z.string(), // ISO timestamp
   updated_at: z.string(), // ISO timestamp
   
+  // Explicit access (private projects): user IDs with edit or view access
+  editors: z.array(z.string()).optional(),
+  viewers: z.array(z.string()).optional(),
+  
   // Embedding fields for semantic search (Phase 2.5)
   // Embedding content = name + description + aggregated session goals
   embedding: z.array(z.number()).optional(), // 1536-dim vector for ada-002
