@@ -115,7 +115,7 @@ export type LegacySessionType = RecordingSource | 'teach_ai';
 /**
  * Export types
  */
-export type ExportType = 'uipath' | 'power_automate' | 'json' | 'pdf' | 'markdown' | 'n8n';
+export type ExportType = 'uipath' | 'power_automate' | 'json' | 'pdf' | 'markdown' | 'n8n' | 'skill';
 
 // ==================== Event Structures ====================
 
