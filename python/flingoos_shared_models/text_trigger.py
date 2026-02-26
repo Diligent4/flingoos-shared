@@ -80,7 +80,7 @@ class TextProcessingOptions(BaseModel):
     
     input_type: TextInputType = Field(..., description="Type of content to generate")
     output_format: TextOutputFormat = Field(..., description="Desired output format")
-    model: str = Field(default="gemini-3-pro-preview", description="LLM model name")
+    model: str = Field(default="gemini-pro-latest", description="LLM model name")
     output_language: TextOutputLanguage = Field(
         default=TextOutputLanguage.AUTO,
         description="Output language. 'auto' detects from input."

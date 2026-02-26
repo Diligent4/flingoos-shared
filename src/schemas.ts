@@ -510,7 +510,7 @@ export const TextSessionRefSchema = z.object({
 export const TextProcessingOptionsSchema = z.object({
   input_type: z.enum(['workflow_recording', 'teaching_session']),
   output_format: z.enum(['workflow_guide', 'knowledge_base']),
-  model: z.string().default('gemini-3-pro-preview'),
+  model: z.string().default('gemini-pro-latest'),
   output_language: TextOutputLanguageSchema.default('auto')
 }).describe('Text processing configuration');
 
