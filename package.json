@@ -10,7 +10,9 @@
     "./types": "./dist/types.js",
     "./schemas": "./dist/schemas.js",
     "./validation": "./dist/validation.js",
-    "./usage-logging": "./dist/usage-logging/index.js"
+    "./usage-logging": "./dist/usage-logging/index.js",
+    "./priority-integration": "./dist/priority-integration.js",
+    "./security": "./dist/security.js"
   },
   "scripts": {
     "build": "tsc",
