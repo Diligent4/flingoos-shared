@@ -15,6 +15,8 @@ export * from './video-artifacts.js';
 export * from './session-translations.js';
 export * from './project.js';
 export * from './edit-history.js';
+export * from './priority-integration.js';
+export * from './security.js';
 
 // Usage logging module (explicit namespace to avoid conflicts)
 export * as UsageLogging from './usage-logging/index.js';
