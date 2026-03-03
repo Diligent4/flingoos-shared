@@ -15,6 +15,7 @@ export * from './video-artifacts.js';
 export * from './session-translations.js';
 export * from './project.js';
 export * from './edit-history.js';
+export * from './plan.js';
 export * from './priority-integration.js';
 export * from './security.js';
 
@@ -191,6 +192,47 @@ export type {
 
 export type { EditHistorySource, EditHistoryVersion } from './edit-history.js';
 export { EDIT_HISTORY_CAP } from './edit-history.js';
+
+// Plan Mode types
+export type {
+  PlanPhase,
+  PlanStatus,
+  PlanGoal,
+  PlanAssetType,
+  PlanAsset,
+  PlanStep,
+  PlanWorkstream,
+  PlanBlueprint,
+  ProducedArtifactType,
+  ProducedArtifactStatus,
+  PlanProducedArtifact,
+  PlanAgentabilityResult,
+  PlanDocument,
+  CreatePlan,
+  UpdatePlan,
+  PlanSummary,
+  ListPlansResponse,
+} from './plan.js';
+
+export {
+  PlanPhaseSchema,
+  PlanStatusSchema,
+  PlanGoalSchema,
+  PlanAssetTypeSchema,
+  PlanAssetSchema,
+  PlanStepSchema,
+  PlanWorkstreamSchema,
+  PlanBlueprintSchema,
+  ProducedArtifactTypeSchema,
+  ProducedArtifactStatusSchema,
+  PlanProducedArtifactSchema,
+  PlanAgentabilityResultSchema,
+  PlanDocumentSchema,
+  CreatePlanSchema,
+  UpdatePlanSchema,
+  PlanSummarySchema,
+  ListPlansResponseSchema,
+} from './plan.js';
 
 export {
   ProjectSchema,
