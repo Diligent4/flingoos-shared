@@ -105,8 +105,8 @@ class TextTrigger(BaseModel):
         default=TextVisibility.PRIVATE, 
         description="Data visibility"
     )
-    source: Literal["mcp-generate"] = Field(
-        default="mcp-generate", 
+    source: Literal["mcp-generate", "plan-convert", "plan-convert-full"] = Field(
+        default="mcp-generate",
         description="Trigger source"
     )
     project_id: Optional[str] = Field(None, description="Project to add this context to")

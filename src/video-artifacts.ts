@@ -158,7 +158,8 @@ export const VideoTemporalPhaseSchema = z.object({
 export const VideoWorkflowStepSchema = z.object({
   step_number: z.number(),
   // Optional for text-based workflows; present for video-based workflows
-  timestamp: z.number().optional(),
+  // nullable() for Firestore compat (stores null explicitly); transform normalizes to undefined
+  timestamp: z.number().nullable().optional().transform(v => v ?? undefined),
   // Explicit phase assignment (priority over timestamp-based matching)
   // Used by text-based workflows and UI edits; video workflows compute from timestamp
   // null means explicitly ungrouped (moved to "Additional Steps")
@@ -429,7 +430,8 @@ export const KnowledgeItemSchema = z.object({
   item_id: z.string().optional(),  // Optional for backward compat - merge system mints IDs
   type: KnowledgeItemTypeSchema,
   // Optional for text-based workflows; present for video-based workflows
-  timestamp: z.number().optional(),
+  // nullable() for Firestore compat; transform normalizes to undefined
+  timestamp: z.number().nullable().optional().transform(v => v ?? undefined),
   title: z.string(),
   content: z.string(),
   importance: KnowledgeImportanceSchema,

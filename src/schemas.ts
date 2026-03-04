@@ -523,7 +523,7 @@ export const TextTriggerSchema = z.object({
   text_session: TextSessionRefSchema,
   processing_options: TextProcessingOptionsSchema,
   visibility: z.enum(['private', 'org:view', 'org:edit']).default('private'),
-  source: z.literal('mcp-generate').default('mcp-generate'),
+  source: z.enum(['mcp-generate', 'plan-convert', 'plan-convert-full']).default('mcp-generate'),
   project_id: z.string().optional(),
   name: z.string().optional()  // Optional user-provided name for the generated context
 }).describe('Text Trigger v1.0 - JSON contract for text-to-context generation');
