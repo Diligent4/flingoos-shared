@@ -16,12 +16,9 @@ import { StepTypeSchema } from './video-artifacts.js';
 // ============================================================================
 
 export const PlanPhaseSchema = z.enum([
-  'exploring',
-  'grounding',
-  'assessing',
-  'drafting',
-  'refining',
-  'converting',
+  'discovering',
+  'designing',
+  'building',
 ]);
 export type PlanPhase = z.infer<typeof PlanPhaseSchema>;
 
