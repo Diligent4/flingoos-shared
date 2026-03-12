@@ -268,6 +268,7 @@ export type {
   CreateUploadedArtifact,
   UpdateUploadedArtifact,
   ReplaceUploadedArtifact,
+  ArtifactCategory,
 } from './uploaded-artifact.js';
 
 export {
@@ -281,6 +282,9 @@ export {
   DOWNLOAD_SIGNED_URL_EXPIRY_MINUTES,
   UPLOADED_ARTIFACTS_BUCKET,
   INLINE_UPLOAD_CONTENT_TYPES,
+  ARTIFACT_CATEGORIES,
+  ARTIFACT_CATEGORY_LABELS,
+  ARTIFACT_CATEGORY_DESCRIPTIONS,
   isInlineUploadContentType,
   buildUploadStoragePath,
 } from './uploaded-artifact.js';

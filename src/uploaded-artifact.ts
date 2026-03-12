@@ -9,6 +9,43 @@
 import { z } from 'zod';
 
 // ---------------------------------------------------------------------------
+// Artifact Categories
+// ---------------------------------------------------------------------------
+
+/**
+ * Categories for uploaded artifacts — helps users and AI agents
+ * understand the purpose of each file at a glance.
+ */
+export const ARTIFACT_CATEGORIES = [
+  'template',      // Reusable templates (SOPs, checklists, forms)
+  'script',        // Scripts, code snippets, automation files
+  'data',          // Data files (spreadsheets, CSVs, exports)
+  'reference',     // Reference docs (policies, guidelines, specs)
+  'image',         // Screenshots, diagrams, visual aids
+  'other',         // Anything that doesn't fit above
+] as const;
+
+export type ArtifactCategory = (typeof ARTIFACT_CATEGORIES)[number];
+
+export const ARTIFACT_CATEGORY_LABELS: Record<ArtifactCategory, string> = {
+  template: 'Template',
+  script: 'Script / Code',
+  data: 'Data',
+  reference: 'Reference Doc',
+  image: 'Image / Diagram',
+  other: 'Other',
+};
+
+export const ARTIFACT_CATEGORY_DESCRIPTIONS: Record<ArtifactCategory, string> = {
+  template: 'SOPs, checklists, forms, reusable templates',
+  script: 'Scripts, code snippets, automation files',
+  data: 'Spreadsheets, CSVs, data exports',
+  reference: 'Policies, guidelines, specs, manuals',
+  image: 'Screenshots, diagrams, visual aids',
+  other: 'Other files',
+};
+
+// ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
@@ -52,6 +89,7 @@ export const UploadedArtifactSchema = z.object({
   artifact_id: z.string(),
   source: z.literal('uploaded'),
   status: z.enum(['pending', 'ready']).default('pending'),
+  category: z.enum(ARTIFACT_CATEGORIES).default('other'),
   name: z.string().max(200),
   description: z.string().max(1000).default(''),
 
@@ -74,6 +112,7 @@ export type UploadedArtifact = z.infer<typeof UploadedArtifactSchema>;
 /** API input for creating an uploaded artifact (initiating upload). */
 export const CreateUploadedArtifactSchema = z.object({
   name: z.string().min(1).max(200),
+  category: z.enum(ARTIFACT_CATEGORIES).default('other'),
   description: z.string().max(1000).default(''),
   filename: z.string().min(1),
   content_type: z.string().refine(
@@ -90,9 +129,10 @@ export type CreateUploadedArtifact = z.infer<typeof CreateUploadedArtifactSchema
 /** API input for updating an uploaded artifact (name/description only). */
 export const UpdateUploadedArtifactSchema = z.object({
   name: z.string().min(1).max(200).optional(),
+  category: z.enum(ARTIFACT_CATEGORIES).optional(),
   description: z.string().max(1000).optional(),
 }).refine(
-  (data) => data.name !== undefined || data.description !== undefined,
+  (data) => data.name !== undefined || data.category !== undefined || data.description !== undefined,
   { message: 'At least one field must be provided' }
 );
 
