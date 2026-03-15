@@ -30,18 +30,18 @@ export type ArtifactCategory = (typeof ARTIFACT_CATEGORIES)[number];
 export const ARTIFACT_CATEGORY_LABELS: Record<ArtifactCategory, string> = {
   template: 'Template',
   script: 'Script / Code',
-  data: 'Data',
+  data: 'Data / Financials',
   reference: 'Reference Doc',
   image: 'Image / Diagram',
   other: 'Other',
 };
 
 export const ARTIFACT_CATEGORY_DESCRIPTIONS: Record<ArtifactCategory, string> = {
-  template: 'SOPs, checklists, forms, reusable templates',
-  script: 'Scripts, code snippets, automation files',
-  data: 'Spreadsheets, CSVs, data exports',
-  reference: 'Policies, guidelines, specs, manuals',
-  image: 'Screenshots, diagrams, visual aids',
+  template: 'SOPs, invoices, checklists, budget templates',
+  script: 'Scripts, macros, automation files',
+  data: 'Spreadsheets, financial statements, P&L, reports',
+  reference: 'Policies, compliance docs, regulations, specs',
+  image: 'Screenshots, charts, diagrams, org charts',
   other: 'Other files',
 };
 
@@ -53,7 +53,14 @@ export const ACCEPTED_UPLOAD_CONTENT_TYPES = [
   'application/pdf',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',       // xlsx
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation', // pptx
+  'application/vnd.ms-excel',                                                // xls
+  'application/vnd.ms-powerpoint',                                           // ppt
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.template',    // xltx
+  'application/vnd.oasis.opendocument.spreadsheet',                          // ods
+  'application/vnd.oasis.opendocument.text',                                 // odt
   'text/csv',
+  'text/tab-separated-values',                                               // tsv
   'text/plain',
   'image/png',
   'image/jpeg',
@@ -62,6 +69,8 @@ export const ACCEPTED_UPLOAD_CONTENT_TYPES = [
   'application/xml',
   'text/xml',
 ] as const;
+
+export const SHAREPOINT_LINK_CONTENT_TYPE = 'application/x-sharepoint-link';
 
 export const MAX_UPLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
 
@@ -74,6 +83,7 @@ export const UPLOADED_ARTIFACTS_BUCKET = 'flingoos-uploaded-artifacts';
 export const INLINE_UPLOAD_CONTENT_TYPES = [
   'text/plain',
   'text/csv',
+  'text/tab-separated-values',
   'text/markdown',
   'application/json',
   'application/xml',
@@ -99,6 +109,9 @@ export const UploadedArtifactSchema = z.object({
   content_type: z.string(),
   size_bytes: z.number(),
 
+  // Optional: external link (e.g. SharePoint)
+  source_url: z.string().url().optional(),
+
   // Ownership
   uploaded_by: z.string(),
 
@@ -109,8 +122,8 @@ export const UploadedArtifactSchema = z.object({
 
 export type UploadedArtifact = z.infer<typeof UploadedArtifactSchema>;
 
-/** API input for creating an uploaded artifact (initiating upload). */
-export const CreateUploadedArtifactSchema = z.object({
+/** API input for creating an uploaded artifact via file upload. */
+export const CreateUploadedArtifactFileSchema = z.object({
   name: z.string().min(1).max(200),
   category: z.enum(ARTIFACT_CATEGORIES).default('other'),
   description: z.string().max(1000).default(''),
@@ -123,6 +136,20 @@ export const CreateUploadedArtifactSchema = z.object({
     message: `File size must not exceed ${MAX_UPLOAD_SIZE_BYTES / (1024 * 1024)}MB`,
   }),
 });
+
+/** API input for creating an uploaded artifact via external link (e.g. SharePoint). */
+export const CreateUploadedArtifactLinkSchema = z.object({
+  name: z.string().min(1).max(200),
+  category: z.enum(ARTIFACT_CATEGORIES).default('other'),
+  description: z.string().max(1000).default(''),
+  source_url: z.string().url(),
+});
+
+/** API input for creating an uploaded artifact (file or link). */
+export const CreateUploadedArtifactSchema = z.union([
+  CreateUploadedArtifactFileSchema,
+  CreateUploadedArtifactLinkSchema,
+]);
 
 export type CreateUploadedArtifact = z.infer<typeof CreateUploadedArtifactSchema>;
 
@@ -159,6 +186,11 @@ export type ReplaceUploadedArtifact = z.infer<typeof ReplaceUploadedArtifactSche
 /** Check if a content type is text-based (can be returned inline). */
 export function isInlineUploadContentType(contentType: string): boolean {
   return (INLINE_UPLOAD_CONTENT_TYPES as readonly string[]).includes(contentType);
+}
+
+/** Check if an artifact is a SharePoint (or external) link rather than an uploaded file. */
+export function isSharePointLink(artifact: { content_type: string; source_url?: string }): boolean {
+  return artifact.content_type === SHAREPOINT_LINK_CONTENT_TYPE || !!artifact.source_url;
 }
 
 /** Build the GCS storage path for an uploaded artifact. */

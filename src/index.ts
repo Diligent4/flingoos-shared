@@ -274,6 +274,8 @@ export type {
 export {
   UploadedArtifactSchema,
   CreateUploadedArtifactSchema,
+  CreateUploadedArtifactFileSchema,
+  CreateUploadedArtifactLinkSchema,
   UpdateUploadedArtifactSchema,
   ReplaceUploadedArtifactSchema,
   ACCEPTED_UPLOAD_CONTENT_TYPES,
@@ -285,6 +287,8 @@ export {
   ARTIFACT_CATEGORIES,
   ARTIFACT_CATEGORY_LABELS,
   ARTIFACT_CATEGORY_DESCRIPTIONS,
+  SHAREPOINT_LINK_CONTENT_TYPE,
   isInlineUploadContentType,
+  isSharePointLink,
   buildUploadStoragePath,
 } from './uploaded-artifact.js';
