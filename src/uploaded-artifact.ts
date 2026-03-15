@@ -77,7 +77,10 @@ export const MAX_UPLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
 export const UPLOAD_SIGNED_URL_EXPIRY_MINUTES = 30;
 export const DOWNLOAD_SIGNED_URL_EXPIRY_MINUTES = 15;
 
-export const UPLOADED_ARTIFACTS_BUCKET = process.env.GCP_ARTIFACTS_BUCKET_NAME || 'flingoos-production-uploaded-artifacts';
+if (!process.env.GCP_ARTIFACTS_BUCKET_NAME) {
+  throw new Error('GCP_ARTIFACTS_BUCKET_NAME environment variable is required');
+}
+export const UPLOADED_ARTIFACTS_BUCKET = process.env.GCP_ARTIFACTS_BUCKET_NAME;
 
 // Content types that can be returned inline (text-based)
 export const INLINE_UPLOAD_CONTENT_TYPES = [
