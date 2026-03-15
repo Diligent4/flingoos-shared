@@ -77,7 +77,7 @@ export const MAX_UPLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
 export const UPLOAD_SIGNED_URL_EXPIRY_MINUTES = 30;
 export const DOWNLOAD_SIGNED_URL_EXPIRY_MINUTES = 15;
 
-export const UPLOADED_ARTIFACTS_BUCKET = 'flingoos-uploaded-artifacts';
+export const UPLOADED_ARTIFACTS_BUCKET = process.env.GCP_ARTIFACTS_BUCKET_NAME || 'flingoos-production-uploaded-artifacts';
 
 // Content types that can be returned inline (text-based)
 export const INLINE_UPLOAD_CONTENT_TYPES = [
@@ -122,12 +122,18 @@ export const UploadedArtifactSchema = z.object({
 
 export type UploadedArtifact = z.infer<typeof UploadedArtifactSchema>;
 
+/** Zod refinement: reject filenames containing path separators or traversal sequences. */
+const safeFilename = z.string().min(1).refine(
+  (f) => !f.includes('/') && !f.includes('\\') && !f.startsWith('.'),
+  { message: 'Filename must not contain path separators or start with a dot' },
+);
+
 /** API input for creating an uploaded artifact via file upload. */
 export const CreateUploadedArtifactFileSchema = z.object({
   name: z.string().min(1).max(200),
   category: z.enum(ARTIFACT_CATEGORIES).default('other'),
   description: z.string().max(1000).default(''),
-  filename: z.string().min(1),
+  filename: safeFilename,
   content_type: z.string().refine(
     (ct) => (ACCEPTED_UPLOAD_CONTENT_TYPES as readonly string[]).includes(ct),
     { message: 'Unsupported file type' }
@@ -167,7 +173,7 @@ export type UpdateUploadedArtifact = z.infer<typeof UpdateUploadedArtifactSchema
 
 /** API input for replacing a file (new upload for existing artifact). */
 export const ReplaceUploadedArtifactSchema = z.object({
-  filename: z.string().min(1),
+  filename: safeFilename,
   content_type: z.string().refine(
     (ct) => (ACCEPTED_UPLOAD_CONTENT_TYPES as readonly string[]).includes(ct),
     { message: 'Unsupported file type' }
@@ -209,6 +215,18 @@ export function isSharePointLink(artifact: { content_type: string; source_url?: 
   return artifact.content_type === SHAREPOINT_LINK_CONTENT_TYPE;
 }
 
+/**
+ * Sanitize a filename for use in a GCS object key.
+ * Strips path separators and traversal sequences to prevent tenant isolation bypass.
+ */
+export function sanitizeFilename(filename: string): string {
+  // Extract basename (strip any directory components)
+  const basename = filename.split(/[/\\]/).pop() || 'unnamed';
+  // Remove any remaining traversal dots at the start
+  const cleaned = basename.replace(/^\.+/, '');
+  return cleaned || 'unnamed';
+}
+
 /** Build the GCS storage path for an uploaded artifact. */
 export function buildUploadStoragePath(
   orgId: string,
@@ -216,5 +234,5 @@ export function buildUploadStoragePath(
   artifactId: string,
   filename: string,
 ): string {
-  return `${orgId}/${sessionId}/${artifactId}/${filename}`;
+  return `${orgId}/${sessionId}/${artifactId}/${sanitizeFilename(filename)}`;
 }

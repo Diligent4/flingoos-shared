@@ -292,6 +292,7 @@ export {
   isInlineUploadContentType,
   isSharePointLink,
   buildUploadStoragePath,
+  sanitizeFilename,
 } from './uploaded-artifact.js';
 
 export type {
