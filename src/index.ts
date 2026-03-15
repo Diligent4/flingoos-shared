@@ -288,7 +288,12 @@ export {
   ARTIFACT_CATEGORY_LABELS,
   ARTIFACT_CATEGORY_DESCRIPTIONS,
   SHAREPOINT_LINK_CONTENT_TYPE,
+  GENERATED_ARTIFACT_NAMES,
   isInlineUploadContentType,
   isSharePointLink,
   buildUploadStoragePath,
+} from './uploaded-artifact.js';
+
+export type {
+  GeneratedArtifactName,
 } from './uploaded-artifact.js';

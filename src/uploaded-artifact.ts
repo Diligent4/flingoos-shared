@@ -180,6 +180,22 @@ export const ReplaceUploadedArtifactSchema = z.object({
 export type ReplaceUploadedArtifact = z.infer<typeof ReplaceUploadedArtifactSchema>;
 
 // ---------------------------------------------------------------------------
+// Generated Artifact Names (well-known Firestore document IDs)
+// ---------------------------------------------------------------------------
+
+/**
+ * Well-known artifact document IDs for generated (pipeline-produced) artifacts.
+ * These are used as Firestore document IDs in the artifacts subcollection.
+ */
+export const GENERATED_ARTIFACT_NAMES = {
+  SCRIPT_OUTPUT: 'script_output',
+  N8N_OUTPUT: 'n8n_output',
+  AUTOMATIONS_SCORE: 'automations_score',
+} as const;
+
+export type GeneratedArtifactName = (typeof GENERATED_ARTIFACT_NAMES)[keyof typeof GENERATED_ARTIFACT_NAMES];
+
+// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
@@ -190,7 +206,7 @@ export function isInlineUploadContentType(contentType: string): boolean {
 
 /** Check if an artifact is a SharePoint (or external) link rather than an uploaded file. */
 export function isSharePointLink(artifact: { content_type: string; source_url?: string }): boolean {
-  return artifact.content_type === SHAREPOINT_LINK_CONTENT_TYPE || !!artifact.source_url;
+  return artifact.content_type === SHAREPOINT_LINK_CONTENT_TYPE;
 }
 
 /** Build the GCS storage path for an uploaded artifact. */
