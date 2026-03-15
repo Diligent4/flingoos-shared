@@ -18,6 +18,7 @@ export * from './edit-history.js';
 export * from './plan.js';
 export * from './priority-integration.js';
 export * from './security.js';
+export * from './uploaded-artifact.js';
 
 // Usage logging module (explicit namespace to avoid conflicts)
 export * as UsageLogging from './usage-logging/index.js';
@@ -260,3 +261,41 @@ export {
   ContextSearchResultSchema,
   ContextListOutputSchema
 } from './project.js';
+
+// Uploaded artifact types
+export type {
+  UploadedArtifact,
+  CreateUploadedArtifact,
+  UpdateUploadedArtifact,
+  ReplaceUploadedArtifact,
+  ArtifactCategory,
+} from './uploaded-artifact.js';
+
+export {
+  UploadedArtifactSchema,
+  CreateUploadedArtifactSchema,
+  CreateUploadedArtifactFileSchema,
+  CreateUploadedArtifactLinkSchema,
+  UpdateUploadedArtifactSchema,
+  ReplaceUploadedArtifactSchema,
+  ACCEPTED_UPLOAD_CONTENT_TYPES,
+  MAX_UPLOAD_SIZE_BYTES,
+  UPLOAD_SIGNED_URL_EXPIRY_MINUTES,
+  DOWNLOAD_SIGNED_URL_EXPIRY_MINUTES,
+  UPLOADED_ARTIFACTS_BUCKET,
+  getUploadedArtifactsBucket,
+  INLINE_UPLOAD_CONTENT_TYPES,
+  ARTIFACT_CATEGORIES,
+  ARTIFACT_CATEGORY_LABELS,
+  ARTIFACT_CATEGORY_DESCRIPTIONS,
+  SHAREPOINT_LINK_CONTENT_TYPE,
+  GENERATED_ARTIFACT_NAMES,
+  isInlineUploadContentType,
+  isSharePointLink,
+  buildUploadStoragePath,
+  sanitizeFilename,
+} from './uploaded-artifact.js';
+
+export type {
+  GeneratedArtifactName,
+} from './uploaded-artifact.js';
