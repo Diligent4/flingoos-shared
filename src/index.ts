@@ -19,6 +19,7 @@ export * from './plan.js';
 export * from './priority-integration.js';
 export * from './security.js';
 export * from './uploaded-artifact.js';
+export * from './clustering.js';
 
 // Usage logging module (explicit namespace to avoid conflicts)
 export * as UsageLogging from './usage-logging/index.js';
