@@ -5,8 +5,9 @@
  * (flingoos-bucket-sa) is impersonated by each service's runtime SA,
  * producing short-lived tokens with no distributed keys.
  *
- * Dependencies (@google-cloud/storage, google-auth-library) are loaded
- * dynamically so non-storage consumers of @flingoos/shared don't pull them in.
+ * Uses google-auth-library's Impersonated class resolved from
+ * @google-cloud/storage's own dependency tree, ensuring version compatibility
+ * for both data operations and signed URL generation (IAM signBlob).
  */
 
 import type { StorageClientOptions } from './types.js';
@@ -21,6 +22,7 @@ let _impersonatedClientPromise: Promise<any> | null = null;
  * The runtime SA (e.g. flingoos-video-forge-sa) impersonates the platform
  * bucket SA, which has objectAdmin on the target buckets.
  *
+ * Supports read, write, delete, AND signed URL generation (via IAM signBlob).
  * The client is cached as a singleton — safe to call repeatedly.
  */
 export async function getImpersonatedStorageClient(
@@ -32,8 +34,18 @@ export async function getImpersonatedStorageClient(
   if (_impersonatedClientPromise) return _impersonatedClientPromise;
 
   _impersonatedClientPromise = (async () => {
-    const { GoogleAuth, Impersonated } = await import('google-auth-library');
-    const { Storage } = await import('@google-cloud/storage');
+    const storageModule = await import('@google-cloud/storage');
+    const { Storage } = storageModule;
+
+    // Resolve google-auth-library from Storage's own dependency tree
+    // to avoid version mismatch (Impersonated must be instanceof AuthClient
+    // from the same package that Storage uses internally).
+    const { createRequire } = await import('module');
+    const require = createRequire(import.meta.url);
+    const galPath = require.resolve('google-auth-library', {
+      paths: [require.resolve('@google-cloud/storage')],
+    });
+    const { GoogleAuth, Impersonated } = require(galPath);
 
     const auth = new GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
@@ -47,10 +59,7 @@ export async function getImpersonatedStorageClient(
       lifetime: 3600,
     });
 
-    // Impersonated implements the auth interface at runtime but the TS types
-    // don't extend AuthClient — cast is safe per google-auth-library docs.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    _impersonatedClient = new Storage({ authClient: impersonated as any });
+    _impersonatedClient = new Storage({ authClient: impersonated });
     _impersonatedClientPromise = null;
     return _impersonatedClient;
   })();
