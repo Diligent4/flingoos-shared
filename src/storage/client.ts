@@ -5,16 +5,20 @@
  * (flingoos-bucket-sa) is impersonated by each service's runtime SA,
  * producing short-lived tokens with no distributed keys.
  *
- * Uses google-auth-library's Impersonated class resolved from
- * @google-cloud/storage's own dependency tree, ensuring version compatibility
- * for both data operations and signed URL generation (IAM signBlob).
+ * Uses google-auth-library's Impersonated class which supports both data
+ * operations and signed URL generation (via IAM signBlob).
+ *
+ * IMPORTANT: Consumers must ensure google-auth-library is deduplicated
+ * (single version) so Impersonated passes instanceof AuthClient checks.
+ * Add an npm override if @google-cloud/storage bundles a different version.
  */
 
+import { Storage } from '@google-cloud/storage';
+import { GoogleAuth, Impersonated } from 'google-auth-library';
 import type { StorageClientOptions } from './types.js';
 
-// Use `any` for the cached client to avoid top-level import of @google-cloud/storage
-let _impersonatedClient: any | null = null;
-let _impersonatedClientPromise: Promise<any> | null = null;
+let _impersonatedClient: Storage | null = null;
+let _impersonatedClientPromise: Promise<Storage> | null = null;
 
 /**
  * Get a GCS Storage client authenticated via SA impersonation.
@@ -27,26 +31,11 @@ let _impersonatedClientPromise: Promise<any> | null = null;
  */
 export async function getImpersonatedStorageClient(
   options: StorageClientOptions,
-): Promise<any> {
+): Promise<Storage> {
   if (_impersonatedClient) return _impersonatedClient;
-
-  // Deduplicate concurrent init calls
   if (_impersonatedClientPromise) return _impersonatedClientPromise;
 
   _impersonatedClientPromise = (async () => {
-    const storageModule = await import('@google-cloud/storage');
-    const { Storage } = storageModule;
-
-    // Resolve google-auth-library from Storage's own dependency tree
-    // to avoid version mismatch (Impersonated must be instanceof AuthClient
-    // from the same package that Storage uses internally).
-    const { createRequire } = await import('module');
-    const require = createRequire(import.meta.url);
-    const galPath = require.resolve('google-auth-library', {
-      paths: [require.resolve('@google-cloud/storage')],
-    });
-    const { GoogleAuth, Impersonated } = require(galPath);
-
     const auth = new GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
@@ -59,9 +48,9 @@ export async function getImpersonatedStorageClient(
       lifetime: 3600,
     });
 
-    _impersonatedClient = new Storage({ authClient: impersonated });
+    _impersonatedClient = new Storage({ authClient: impersonated as any });
     _impersonatedClientPromise = null;
-    return _impersonatedClient;
+    return _impersonatedClient!;
   })();
 
   return _impersonatedClientPromise;
@@ -71,12 +60,10 @@ export async function getImpersonatedStorageClient(
  * Get a GCS Storage client from a service account key JSON string.
  * @deprecated Legacy path for orgs that haven't migrated to IAM impersonation.
  */
-export async function getLegacyStorageClient(
+export function getLegacyStorageClient(
   serviceAccountKeyJson: string,
   projectId?: string,
-): Promise<any> {
-  const { Storage } = await import('@google-cloud/storage');
-
+): Storage {
   const credentials = JSON.parse(serviceAccountKeyJson);
   return new Storage({
     credentials,
