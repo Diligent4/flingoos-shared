@@ -36,21 +36,24 @@ export async function getImpersonatedStorageClient(
   if (_impersonatedClientPromise) return _impersonatedClientPromise;
 
   _impersonatedClientPromise = (async () => {
-    const auth = new GoogleAuth({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    const sourceClient = await auth.getClient();
+    try {
+      const auth = new GoogleAuth({
+        scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+      });
+      const sourceClient = await auth.getClient();
 
-    const impersonated = new Impersonated({
-      sourceClient,
-      targetPrincipal: options.bucketSaEmail,
-      targetScopes: ['https://www.googleapis.com/auth/devstorage.full_control'],
-      lifetime: 3600,
-    });
+      const impersonated = new Impersonated({
+        sourceClient,
+        targetPrincipal: options.bucketSaEmail,
+        targetScopes: ['https://www.googleapis.com/auth/devstorage.full_control'],
+        lifetime: 3600,
+      });
 
-    _impersonatedClient = new Storage({ authClient: impersonated as any });
-    _impersonatedClientPromise = null;
-    return _impersonatedClient!;
+      _impersonatedClient = new Storage({ authClient: impersonated as any });
+      return _impersonatedClient!;
+    } finally {
+      _impersonatedClientPromise = null;
+    }
   })();
 
   return _impersonatedClientPromise;
