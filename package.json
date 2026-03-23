@@ -1,7 +1,7 @@
 {
   "name": "@flingoos/shared",
   "version": "0.2.0",
-  "description": "Shared types, schemas, and validation for Flingoos services - NO business logic",
+  "description": "Shared types, schemas, validation, and storage access for Flingoos services",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -12,7 +12,8 @@
     "./validation": "./dist/validation.js",
     "./usage-logging": "./dist/usage-logging/index.js",
     "./priority-integration": "./dist/priority-integration.js",
-    "./security": "./dist/security.js"
+    "./security": "./dist/security.js",
+    "./storage": "./dist/storage/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -24,10 +25,12 @@
     "clean": "rm -rf dist python"
   },
   "devDependencies": {
+    "@google-cloud/storage": "^7.19.0",
     "@jest/globals": "^30.2.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.0.0",
     "@types/uuid": "^10.0.0",
+    "google-auth-library": "^10.6.2",
     "jest": "^30.2.0",
     "ts-jest": "^29.4.6",
     "typescript": "^5.0.0"
@@ -41,10 +44,23 @@
     "dist/**/*",
     "README.md"
   ],
+  "peerDependencies": {
+    "@google-cloud/storage": ">=7.14.0",
+    "google-auth-library": ">=9.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@google-cloud/storage": {
+      "optional": true
+    },
+    "google-auth-library": {
+      "optional": true
+    }
+  },
   "keywords": [
     "types",
     "schemas",
     "validation",
+    "storage",
     "flingoos"
   ],
   "engines": {
