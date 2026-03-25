@@ -4,7 +4,7 @@
  * One document per version; cap 20. Used for "View edit history" and "Restore to version".
  */
 
-export type EditHistorySource = 'mcp' | 'admin_ui' | 'rename' | 'enrich' | 'restore' | 'initial' | 'plan_chat';
+export type EditHistorySource = 'mcp' | 'admin_ui' | 'rename' | 'enrich' | 'restore' | 'initial' | 'plan_chat' | 'reprocess';
 
 /** One version doc in edit_history subcollection. */
 export interface EditHistoryVersion {
