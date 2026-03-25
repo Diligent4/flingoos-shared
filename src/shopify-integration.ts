@@ -14,7 +14,7 @@ export const ShopifyConfigSchema = z.object({
   shop: z
     .string()
     .min(1)
-    .regex(/^[a-zA-Z0-9][a-zA-Z0-9-]*$/, 'Shop must be a valid Shopify store slug (alphanumeric and hyphens only)'),
+    .regex(/^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$/, 'Shop must be a valid Shopify store slug (alphanumeric and hyphens, cannot end with a hyphen)'),
   api_version: z.string().default('2025-01'),
   credentials: ShopifyCredentialsSchema,
   configured_by: z.string().optional(),
