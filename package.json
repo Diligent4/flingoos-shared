@@ -12,6 +12,7 @@
     "./validation": "./dist/validation.js",
     "./usage-logging": "./dist/usage-logging/index.js",
     "./priority-integration": "./dist/priority-integration.js",
+    "./shopify-integration": "./dist/shopify-integration.js",
     "./security": "./dist/security.js",
     "./storage": "./dist/storage/index.js"
   },
