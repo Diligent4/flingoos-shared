@@ -17,6 +17,7 @@ export * from './project.js';
 export * from './edit-history.js';
 export * from './plan.js';
 export * from './priority-integration.js';
+export * from './shopify-integration.js';
 export * from './security.js';
 export * from './uploaded-artifact.js';
 export * from './clustering.js';
