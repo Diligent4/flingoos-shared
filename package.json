@@ -1,6 +1,6 @@
 {
   "name": "@flingoos/shared",
-  "version": "2.0.1",
+  "version": "2.0.0",
   "description": "Shared types, schemas, validation, and storage access for Flingoos services",
   "repository": {
     "type": "git",
