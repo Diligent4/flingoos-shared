@@ -93,7 +93,9 @@ jobs:
             npm version "$TARGET" --no-git-tag-version
           fi
           npm publish --tag ${{ steps.version.outputs.is_prerelease == 'true' && 'next' || 'latest' }} || {
-            if npm view "@flingoos/shared@${TARGET}" version 2>/dev/null; then
+            if gcloud artifacts versions describe "$TARGET" \
+                 --repository=flingoos-npm --location=${{ env.REGION }} \
+                 --package=@flingoos/shared --project=${{ env.PROJECT_ID }} 2>/dev/null; then
               echo "⚠️ npm: version ${TARGET} already published — skipping"
             else
               exit 1
