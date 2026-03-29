@@ -2,6 +2,8 @@ name: Publish Packages
 
 on:
   push:
+    branches: ['**']
+    tags-ignore: ['**']
     paths: ['src/**', 'python/**', 'package.json']
 
   # Manual trigger for re-publishing
