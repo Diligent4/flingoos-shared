@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flingoos-shared-models"
-version = "2.1.0"
+version = "2.0.1"
 description = "Generated Pydantic models from @flingoos/shared JSON schemas"
 authors = [{name = "Flingoos", email = "dev@flingoos.com"}]
 requires-python = ">=3.11"
