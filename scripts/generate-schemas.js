@@ -6,18 +6,19 @@
  * Uses stable options to avoid nested refs that confuse Python generators
  */
 
-import { writeFileSync, mkdirSync } from 'fs';
-import { dirname } from 'path';
+import { writeFileSync, mkdirSync, readFileSync } from 'fs';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { zodToJsonSchema } from 'zod-to-json-schema';
+import { z } from 'zod';
 import * as schemas from '../dist/schemas.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outputDir = `${__dirname}/../dist/schema`;
 
-// Schema metadata
-const PACKAGE_VERSION = '0.1.0';
-const BASE_URI = 'https://schemas.flingoos.com/shared/v0.1.0/';
+// Schema metadata — read version from package.json to stay in sync
+const pkg = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8'));
+const PACKAGE_VERSION = pkg.version;
+const BASE_URI = `https://schemas.flingoos.com/shared/v${PACKAGE_VERSION}/`;
 
 // Schema definitions to export
 const SCHEMA_EXPORTS = {
@@ -195,14 +196,11 @@ const SCHEMA_EXPORTS = {
   }
 };
 
-// JSON Schema generation options (stable, avoid nested refs)
+// JSON Schema generation options (Zod v4 native)
 const JSON_SCHEMA_OPTIONS = {
-  $refStrategy: 'none',  // Avoid nested refs that confuse Python generators
-  target: 'jsonSchema7',
-  definitionPath: 'definitions',
-  definitions: {},
-  errorMessages: true,
-  markdownDescription: true
+  target: 'draft-07',
+  unrepresentable: 'any',   // Convert unrepresentable types to {} instead of throwing
+  reused: 'inline',         // Inline all definitions (avoid $ref that confuse Python generators)
 };
 
 function generateSchemas() {
@@ -217,7 +215,7 @@ function generateSchemas() {
   // Generate each schema file
   for (const [filename, config] of Object.entries(SCHEMA_EXPORTS)) {
     try {
-      const jsonSchema = zodToJsonSchema(config.schema, JSON_SCHEMA_OPTIONS);
+      const jsonSchema = z.toJSONSchema(config.schema, JSON_SCHEMA_OPTIONS);
       
       // Add metadata
       const enrichedSchema = {
@@ -269,7 +267,8 @@ function generateSchemas() {
 }
 
 // Run schema generation
-if (import.meta.url === `file://${process.argv[1]}`) {
+import { pathToFileURL } from 'url';
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   (async () => {
     try {
       const files = generateSchemas();

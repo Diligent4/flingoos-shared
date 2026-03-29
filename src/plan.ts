@@ -47,7 +47,7 @@ export const PlanAssetSchema = z.object({
   size_bytes: z.number().optional(),
   storage_path: z.string().optional(),
   summary: z.string().optional(),
-  extracted_structure: z.record(z.unknown()).optional(),
+  extracted_structure: z.record(z.string(), z.unknown()).optional(),
   added_at: z.string(),
 });
 export type PlanAsset = z.infer<typeof PlanAssetSchema>;
@@ -122,7 +122,7 @@ export type PlanProducedArtifact = z.infer<typeof PlanProducedArtifactSchema>;
 export const PlanAgentabilityResultSchema = z.object({
   session_id: z.string(),
   assessed_at: z.string(),
-  result_summary: z.record(z.unknown()),
+  result_summary: z.record(z.string(), z.unknown()),
 });
 export type PlanAgentabilityResult = z.infer<typeof PlanAgentabilityResultSchema>;
 

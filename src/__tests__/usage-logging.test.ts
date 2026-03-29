@@ -22,6 +22,7 @@ import {
   ADMIN_PANEL_ACTIONS,
   MCP_ACTIONS,
   VIDEO_FORGE_ACTIONS,
+  BILLING_ACTIONS,
   ALL_ACTIONS,
   USAGE_SERVICES,
   isValidAction,
@@ -58,9 +59,10 @@ describe('Usage Logging Module', () => {
       expect(ADMIN_PANEL_ACTIONS).toContain('publish');
       expect(ADMIN_PANEL_ACTIONS).toContain('export');
       expect(ADMIN_PANEL_ACTIONS).toContain('chatbot_message');
+      expect(ADMIN_PANEL_ACTIONS).toContain('unpublish');
       expect(ADMIN_PANEL_ACTIONS).toContain('enrich_click');
       expect(ADMIN_PANEL_ACTIONS).toContain('daily_active_user');
-      expect(ADMIN_PANEL_ACTIONS.length).toBe(8);
+      expect(ADMIN_PANEL_ACTIONS.length).toBe(9);
     });
     
     it('should have all MCP actions', () => {
@@ -68,7 +70,8 @@ describe('Usage Logging Module', () => {
       expect(MCP_ACTIONS).toContain('mcp_context_get');
       expect(MCP_ACTIONS).toContain('mcp_context_search');
       expect(MCP_ACTIONS).toContain('mcp_context_modify');
-      expect(MCP_ACTIONS.length).toBe(4);
+      expect(MCP_ACTIONS).toContain('mcp_context_generate');
+      expect(MCP_ACTIONS.length).toBe(5);
     });
     
     it('should have all Video Forge actions', () => {
@@ -79,7 +82,7 @@ describe('Usage Logging Module', () => {
     
     it('should combine all actions correctly', () => {
       expect(ALL_ACTIONS.length).toBe(
-        ADMIN_PANEL_ACTIONS.length + MCP_ACTIONS.length + VIDEO_FORGE_ACTIONS.length
+        ADMIN_PANEL_ACTIONS.length + MCP_ACTIONS.length + VIDEO_FORGE_ACTIONS.length + BILLING_ACTIONS.length
       );
       ADMIN_PANEL_ACTIONS.forEach(action => {
         expect(ALL_ACTIONS).toContain(action);
