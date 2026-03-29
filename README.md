@@ -11,9 +11,67 @@ Shared types, schemas, and validation for Flingoos services. This package preven
 
 ## Installation
 
+Published to Google Artifact Registry. Both npm and Python packages are available.
+
+### npm (TypeScript/JavaScript services)
+
 ```bash
-# Install from git (pinned to exact commit/tag)
-npm install git+https://github.com/tslilon/flingoos-shared.git#v0.1.0
+# 1. Set up ADC (one-time — creates a refresh token that doesn't expire)
+gcloud auth application-default login
+
+# 2. Generate npm auth token (expires after 1 hour — re-run when you get 401 errors)
+npx google-artifactregistry-auth
+
+# 3. Install
+npm install @flingoos/shared
+```
+
+Your project needs an `.npmrc` pointing to AR:
+```
+@flingoos:registry=https://me-west1-npm.pkg.dev/flingoos-production/flingoos-npm/
+```
+
+### Python (Pydantic models)
+
+```bash
+# Install with storage extras (for GCS impersonation)
+pip install flingoos-shared-models[storage] \
+  --index-url https://me-west1-python.pkg.dev/flingoos-production/flingoos-python/simple/ \
+  --extra-index-url https://pypi.org/simple/
+
+# Or with uv
+UV_EXTRA_INDEX_URL="https://me-west1-python.pkg.dev/flingoos-production/flingoos-python/simple/" \
+  uv add flingoos-shared-models[storage]
+```
+
+### Version pinning
+
+```json
+// package.json — accept minor updates (recommended)
+"@flingoos/shared": "^2.0.0"
+
+// package.json — pin exact version
+"@flingoos/shared": "2.0.0"
+```
+
+```toml
+# pyproject.toml — accept compatible updates
+"flingoos-shared-models>=2.0.0"
+
+# pyproject.toml — pin exact version
+"flingoos-shared-models==2.0.0"
+```
+
+### Local development (testing unreleased changes)
+
+```bash
+# npm — link to local checkout
+cd flingoos-shared && npm run build && npm link
+cd ../flingoos-mcp && npm link @flingoos/shared
+
+# Python — editable install
+cd flingoos-video-forge
+uv pip install -e ../flingoos-shared/python/flingoos_shared_models
 ```
 
 ## Usage
@@ -97,8 +155,37 @@ npm run build
 # Run validation tests
 npm run test
 
+# Generate JSON schemas + Python models
+npm run build:schemas
+
 # Clean build artifacts
 npm run clean
+```
+
+## Publishing a new version
+
+Both npm and Python packages share the same version number.
+
+```bash
+# 1. Bump version in both files (keep in sync)
+#    - package.json: "version": "2.1.0"
+#    - python/flingoos_shared_models/pyproject.toml: version = "2.1.0"
+
+# 2. Commit and tag
+git commit -am "chore: bump version to 2.1.0"
+git tag v2.1.0
+git push origin main --tags
+
+# 3. CI (publish.yml) auto-publishes both packages to Artifact Registry
+```
+
+Consumers update with:
+```bash
+# npm
+npm update @flingoos/shared
+
+# Python
+uv lock --upgrade-package flingoos-shared-models
 ```
 
 ## Field Name Conventions

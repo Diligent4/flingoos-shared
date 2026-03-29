@@ -1,0 +1,141 @@
+name: Publish Packages
+
+on:
+  # Pre-release: publish from any branch push (except main)
+  push:
+    branches-ignore: [main]
+    paths: ['src/**', 'python/**', 'package.json']
+
+  # Official release: publish on merge to main
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+  # Manual trigger for re-publishing
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: flingoos-production
+  PROJECT_NUMBER: 407742180982
+  REGION: me-west1
+
+jobs:
+  publish:
+    # Skip if PR was closed without merging
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Need full history for tagging
+
+      - uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github
+          service_account: github-actions-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
+          project_id: ${{ env.PROJECT_ID }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      # ============================================================
+      # Determine version
+      # ============================================================
+      - name: Determine version
+        id: version
+        run: |
+          BASE_VERSION=$(node -p "require('./package.json').version")
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.ref_name }}" == "main" ]]; then
+            # Merged to main or manual re-publish on main → official release
+            echo "npm_version=${BASE_VERSION}" >> $GITHUB_OUTPUT
+            echo "python_version=${BASE_VERSION}" >> $GITHUB_OUTPUT
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+            echo "📦 Official release: ${BASE_VERSION}"
+          else
+            # Branch push → pre-release with branch name + short SHA
+            BRANCH="${GITHUB_REF_NAME}"
+            SAFE_BRANCH=$(echo "$BRANCH" | sed 's/[^a-zA-Z0-9]/-/g' | head -c 40)
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            # npm semver: 2.0.0-branch-name.abc1234
+            echo "npm_version=${BASE_VERSION}-${SAFE_BRANCH}.${SHORT_SHA}" >> $GITHUB_OUTPUT
+            # PEP 440: 2.0.0.dev20260329 (date-based dev version)
+            DEV_NUM=$(date -u +%Y%m%d%H%M)
+            echo "python_version=${BASE_VERSION}.dev${DEV_NUM}" >> $GITHUB_OUTPUT
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+            echo "📦 Pre-release: npm=${BASE_VERSION}-${SAFE_BRANCH}.${SHORT_SHA} python=${BASE_VERSION}.dev${DEV_NUM}"
+          fi
+
+      # ============================================================
+      # Build and test
+      # ============================================================
+      - run: npx google-artifactregistry-auth
+      - run: npm ci
+      - run: npm run build
+      # - run: npm test
+
+      # ============================================================
+      # Publish npm
+      # ============================================================
+      - name: Publish npm package
+        run: |
+          npm version "${{ steps.version.outputs.npm_version }}" --no-git-tag-version
+          npm publish --tag ${{ steps.version.outputs.is_prerelease == 'true' && 'next' || 'latest' }}
+
+      # ============================================================
+      # Publish Python
+      # ============================================================
+      - run: pip install build==1.4.2 twine==6.2.0 keyrings.google-artifactregistry-auth
+
+      - name: Build and publish Python package
+        run: |
+          cd python/flingoos_shared_models
+
+          # Update version in pyproject.toml
+          sed -i "s/^version = .*/version = \"${{ steps.version.outputs.python_version }}\"/" pyproject.toml
+
+          python -m build --wheel
+          twine upload \
+            --repository-url https://${{ env.REGION }}-python.pkg.dev/${{ env.PROJECT_ID }}/flingoos-python/ \
+            dist/*
+
+      # ============================================================
+      # Tag official releases
+      # ============================================================
+      - name: Tag release
+        if: steps.version.outputs.is_prerelease == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.npm_version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${VERSION}" -m "Release v${VERSION}"
+          git push origin "v${VERSION}"
+
+      # ============================================================
+      # Summary
+      # ============================================================
+      - name: Summary
+        run: |
+          echo "## 📦 Package Published" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| npm version | \`${{ steps.version.outputs.npm_version }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Python version | \`${{ steps.version.outputs.python_version }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Pre-release | ${{ steps.version.outputs.is_prerelease }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| npm tag | ${{ steps.version.outputs.is_prerelease == 'true' && 'next' || 'latest' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY

@@ -18,7 +18,7 @@ import type {
   CounterUpdates,
   McpToolStatus,
 } from './types.js';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'node:crypto';
 
 // ==================== Period ID Helpers ====================
 
@@ -38,7 +38,7 @@ export function getDailyPeriodId(date: Date = new Date()): string {
  * Generate a unique event ID
  */
 export function generateEventId(): string {
-  return `evt_${uuidv4()}`;
+  return `evt_${randomUUID()}`;
 }
 
 // ==================== Counter Update Logic ====================

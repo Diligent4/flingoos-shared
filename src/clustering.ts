@@ -29,7 +29,7 @@ export type OrgClusterEntry = z.infer<typeof OrgClusterEntrySchema>;
 
 export const SidebarClustersSchema = z.object({
   phase: z.enum(['flat', 'topics']),
-  clusters: z.record(ClusterEntrySchema),
+  clusters: z.record(z.string(), ClusterEntrySchema),
   unclustered_session_ids: z.array(z.string()),
 });
 
@@ -37,7 +37,7 @@ export type SidebarClusters = z.infer<typeof SidebarClustersSchema>;
 
 export const OrgClustersSchema = z.object({
   phase: z.enum(['flat', 'topics']),
-  clusters: z.record(OrgClusterEntrySchema),
+  clusters: z.record(z.string(), OrgClusterEntrySchema),
   unclustered_session_ids: z.array(z.string()),
   unclustered_project_ids: z.array(z.string()),
 });
@@ -51,7 +51,7 @@ export const ClusteringDocumentSchema = z.object({
   threshold: z.number(),
   sidebar_clusters: SidebarClustersSchema,
   org_clusters: OrgClustersSchema,
-  name_overrides: z.record(z.string()),
+  name_overrides: z.record(z.string(), z.string()),
 });
 
 export type ClusteringDocument = z.infer<typeof ClusteringDocumentSchema>;

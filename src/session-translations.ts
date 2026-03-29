@@ -18,7 +18,7 @@ export const TranslationStatusSchema = z.enum(['ready', 'stale', 'in_progress', 
 export type TranslationStatus = z.infer<typeof TranslationStatusSchema>;
 
 export const TranslationEntrySchema = z.object({
-  translatedContent: z.record(z.unknown()), // Same structure as canonical content
+  translatedContent: z.record(z.string(), z.unknown()), // Same structure as canonical content
   translatedAt: z.string(),
   sourceRevision: z.number(),
   sourceFingerprint: z.string(),

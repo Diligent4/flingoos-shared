@@ -52,7 +52,8 @@ export const VALID_EXAMPLES = {
     presence_nonce: "pres_xyz789012345abcd",
     deep_link: "flingoos-bridge://approve?t=pres_xyz789012345abcd",
     short_code: "1234",
-    expires_at: "2024-01-15T10:32:00.000Z"
+    expires_at: "2024-01-15T10:32:00.000Z",
+    idempotency_key: "idem_abc123def456"
   } as PresenceIntentResponse,
 
   presenceCompleteRequest: {
